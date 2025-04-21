@@ -1,67 +1,111 @@
+/* Fuente profesional y limpia */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: #f2f2f2;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #e0eafc, #cfdef3); /* Puedes cambiar por una imagen */
+  margin: 0;
+  padding: 0;
+  color: #2c3e50;
 }
 
-.header {
-    background-color: #234076;
-    color: white;
-    padding: 20px 40px;
-    font-size: 24px;
-    font-weight: bold;
+/* Contenedor general */
+.container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #ffffffcc; /* blanco con transparencia */
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
-.contenedor {
-    max-width: 800px;
-    margin: 40px auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* Títulos */
+h1, h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-h1 {
-    color: #234076;
-    margin-bottom: 20px;
-    text-align: center;
+/* Tabla moderna */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.campo {
-    margin-bottom: 20px;
+table th, table td {
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: 1px solid #eaeaea;
 }
 
-.campo label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 8px;
+table th {
+  background-color: #f5f7fa;
+  font-weight: 600;
+  color: #34495e;
 }
 
-.campo select, .campo input, .campo textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+table tr:hover {
+  background-color: #f0f8ff;
 }
 
-.campo textarea {
-    resize: vertical;
+/* Botones */
+button, .btn {
+  background-color: #2980b9;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-button {
-    display: inline-block;
-    background-color: #28a745;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    margin-top: 20px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
+button:hover, .btn:hover {
+  background-color: #1c5980;
 }
 
-button:hover {
-    background-color: #218838;
+/* Formulario */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input, select, textarea {
+  padding: 10px 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Imagen de fondo alternativa */
+body::before {
+  content: "";
+  background: url('https://www.transparenttextures.com/patterns/cubes.png'); /* Puedes usar una textura sutil */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+/* Asegurar que los elementos se alineen correctamente */
+td .dropdown, td .btn {
+  vertical-align: middle;
+}
+
+/* Espaciado entre botones */
+td .btn-secondary {
+  margin-left: 0.5rem;
 }

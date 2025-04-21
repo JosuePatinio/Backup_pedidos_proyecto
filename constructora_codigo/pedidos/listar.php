@@ -3,69 +3,150 @@ include('../includes/conexion.php');
 
 $titulo = "Lista de Pedidos";
 
-// Consulta
-$resultado = $conexion->query("SELECT p.codigo_pedido, e.nombre AS empleado, c.nombre AS chofer, 
-                             p.fecha_pedido, p.estado, p.observaciones, p.id AS id_pedido
-FROM pedidos p
-JOIN empleados e ON p.id_empleado = e.id
-JOIN choferes c ON p.id_chofer = c.id");
+$resultado = $conexion->query("SELECT p.id, p.codigo_pedido, e.nombre AS empleado, 
+                              c.nombre AS chofer, p.fecha_pedido, p.estado, p.observaciones
+                              FROM pedidos p
+                              JOIN empleados e ON p.id_empleado = e.id
+                              JOIN choferes c ON p.id_chofer = c.id
+                              ORDER BY p.fecha_pedido DESC");
 
 ob_start();
 ?>
 
-<h1>Lista de Pedidos</h1>
-<a class="boton" href="agregar.php">+ Agregar nuevo pedido</a>
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-list"></i> Lista de Pedidos</h2>
+        <div>
+            <a href="agregar.php" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nuevo Pedido
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Empleado</th>
+                        <th>Chofer</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while($fila = $resultado->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($fila['codigo_pedido']) ?></td>
+                        <td><?= htmlspecialchars($fila['empleado']) ?></td>
+                        <td><?= htmlspecialchars($fila['chofer']) ?></td>
+                        <td>
+                            <?= (!empty($fila['fecha_pedido']) && $fila['fecha_pedido'] !== '0000-00-00') ? 
+                                date('d/m/Y', strtotime($fila['fecha_pedido'])) : 'Sin fecha' ?>
+                        </td>
+                        
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm dropdown-toggle <?php
+                                    echo match(strtolower($fila['estado'])) {
+                                        'pendiente' => 'btn-warning',
+                                        'en proceso' => 'btn-info',
+                                        'finalizado' => 'btn-success',
+                                        'cancelado' => 'btn-danger',
+                                        default => 'btn-secondary'
+                                    };
+                                ?>" 
+                                type="button" id="dropdownEstado<?= $fila['id'] ?>" 
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                data-id="<?= $fila['id'] ?>">
+                                    <?= ucfirst($fila['estado']) ?>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownEstado<?= $fila['id'] ?>">
+                                    <li><a class="dropdown-item estado-option" href="#" data-estado="pendiente">Pendiente</a></li>
+                                    <li><a class="dropdown-item estado-option" href="#" data-estado="en proceso">En proceso</a></li>
+                                    <li><a class="dropdown-item estado-option" href="#" data-estado="finalizado">Finalizado</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item estado-option text-danger" href="#" data-estado="cancelado">Cancelado</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="ver.php?id=<?= $fila['id'] ?>" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </td>
 
-<table>
-    <thead>
-        <tr>
-            <th>Código Pedido</th>
-            <th>Empleado</th>
-            <th>Chofer</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Observaciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php while($fila = $resultado->fetch_assoc()): ?>
-        <tr>
-            <td><?= $fila['codigo_pedido'] ?></td>
-            <td><?= $fila['empleado'] ?></td>
-            <td><?= $fila['chofer'] ?></td>
 
-            <!-- Formato de fecha: de Y-m-d a d/m/Y -->
-            <td>
-                <?php 
-                    $fecha = $fila['fecha_pedido'];
-                    // Verificar si la fecha es válida
-                    if ($fecha && $fecha !== '0000-00-00') {
-                        $fecha_formateada = date('Y-m-d', strtotime($fecha)); // Mostrar en formato yyyy-mm-dd
-                    } else {
-                        $fecha_formateada = 'Sin fecha';
-                    }
-                    echo $fecha_formateada;
-                ?>
-            </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 
-            <!-- Estado con estilos -->
-            <td>
-                <?php
-                    $estado = strtolower($fila['estado']);
-                    $clase_estado = 'estado';
-                    if ($estado === 'pendiente') $clase_estado .= ' estado-pendiente';
-                    elseif ($estado === 'finalizado') $clase_estado .= ' estado-finalizado';
-                    elseif ($estado === 'cancelado') $clase_estado .= ' estado-cancelado';
-                ?>
-                <span class="<?= $clase_estado ?>"><?= ucfirst($estado) ?></span>
-            </td>
 
-            <td><?= $fila['observaciones'] ?></td>
-        </tr>
-        <?php endwhile; ?>
-    </tbody>
-</table>
+<script>
+$(document).ready(function() {
+    // Manejar cambio de estado
+    $(document).on('click', '.estado-option', function(e) {
+        e.preventDefault();
+        
+        const $option = $(this);
+        const $dropdown = $option.closest('.dropdown');
+        const $button = $dropdown.find('button');
+        const pedidoId = $button.data('id');
+        const nuevoEstado = $option.data('estado');
+        const nuevoEstadoTexto = $option.text().trim();
+        
+        // Mostrar loading
+        const originalHtml = $button.html();
+        $button.html('<span class="spinner-border spinner-border-sm" role="status"></span>');
+        $button.prop('disabled', true);
+        
+        $.ajax({
+            url: 'cambiar_estado.php',
+            method: 'POST',
+            data: {
+                id_pedido: pedidoId,
+                estado: nuevoEstado
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Actualizar el botón visualmente
+                    $button.removeClass('btn-warning btn-info btn-success btn-danger')
+                           .addClass(response.clase_boton)
+                           .text(nuevoEstadoTexto);
+                    
+                    // Cerrar el dropdown
+                    bootstrap.Dropdown.getInstance($button[0]).hide();
+                    
+                    // Mostrar notificación de éxito
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Estado actualizado!',
+                        text: 'El estado ha sido cambiado a: ' + nuevoEstadoTexto,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Error', response.error || 'Ocurrió un error', 'error');
+                }
+            },
+            error: function() {
+                Swal.fire('Error', 'Error de conexión', 'error');
+            },
+            complete: function() {
+                $button.html(nuevoEstadoTexto).prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
+
 
 <?php
 $contenido = ob_get_clean();
