@@ -49,31 +49,31 @@
     }
     
     .sidebar {
-    background-color: #1E3A8A; /* Tu azul oscuro */
-    color: rgba(255, 255, 255, 0.9); /* Recomendación estándar */
+    background-color: #1E3A8A; 
+    color: rgba(255, 255, 255, 0.9);
     }
 
     /* Opcional: Cambiar color de íconos */
     /* Color principal de los links */
     .sidebar .nav-link {
-        color: rgba(255, 255, 255, 0.8); /* Blanco al 80% de opacidad (ajustable) */
+        color: rgba(255, 255, 255, 0.8); 
         text-decoration: none; /* Quita el subrayado */
         transition: color 0.3s; /* Efecto suave al pasar el mouse */
     }
 
     /* Color al pasar el mouse (hover) */
     .sidebar .nav-link:hover {
-        color: #ffffff !important; /* Blanco puro */
+        color: #ffffff !important;
     }
 
     /* Color cuando está activo (página actual) */
     .sidebar .nav-link.active {
-        color: #ffffff !important; /* Blanco puro */
+        color: #ffffff !important; 
         font-weight: 600; /* Texto en negrita */
     }
     
     .sidebar-header {
-    background-color: rgba(0,0,0,0.1); /* Sutil oscurecimiento */
+    background-color: rgba(0,0,0,0.1); /* oscurecimiento */
     padding: 25px;
     margin-bottom: 10px;
     }
